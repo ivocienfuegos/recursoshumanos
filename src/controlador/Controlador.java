@@ -13,6 +13,41 @@ import modelo.Empleado;
 
 public class Controlador {
     
+    private static ArrayList<Empleado> empleados = null;
+    //CONSTRUCTOR
+    private Controlador()
+    {
+        if(empleados == null)
+        {
+            empleados = new ArrayList<Empleado>();
+            
+            String sentencia = "SELECT id, rut, fecha_ingreso, fecha_cumpleanos, direccion, nombre FROM EMPLEADO"; 
+            try {
+                Connection conexion = Conexion.getConnection();
+                Statement statement = conexion.createStatement();
+                ResultSet resultado = statement.executeQuery(sentencia);
+
+                while (resultado.next()){
+
+                    int codigo =Integer.parseInt(resultado.getString("codigo"));
+                    int id = resultado.getInt("codigo");
+                    int rut = resultado.getInt("rut");
+                    String fechaIngreso = resultado.getString("fecha_ingreso");
+                    String fechaCumpleanos = resultado.getString("fecha_cumpleanos");
+                    String direccion = resultado.getString("direccion");
+                    String nombre = resultado.getString("nombre");
+
+                    empleados.add(new Empleado(id, rut, fechaIngreso, fechaCumpleanos, direccion, nombre));
+                }
+            } 
+            catch (SQLException ex) {
+                 JOptionPane.showMessageDialog(new JDialog(), "Error al iniciar controlador.");
+            }
+        }
+    }
+    
+    
+    //MODIFICAR
        public void modificar(Empleado empleado, int rut) throws SQLException
     {
         String sentencia = "update empleado set id='"+empleado.getId()+"' where rut ="+rut;
@@ -31,44 +66,25 @@ public class Controlador {
         statement.executeUpdate(sentencia4);
         statement.executeUpdate(sentencia5);
     }
-       
-       public void agregar(){
-       }
-       
-       
-       
-       public void eliminar (){
-        
-        
-    }
-       
-    public ArrayList<Persona> getLista()
-    {
-        ArrayList<Persona> persona = new ArrayList();
-        String sentencia = "SELECT id, rut, fecha_ingreso, direccion, fecha_cumpleaño, nombre FROM PERSONAL"; 
-        try {
+    
+    //AGREGAR
+    public void agregar(Empleado empleado){
+        empleados.add(empleado);
+        try
+        {
             Connection conexion = Conexion.getConnection();
             Statement statement = conexion.createStatement();
-            ResultSet resultado = statement.executeQuery(sentencia);
-            
-            while (resultado.next()){
-   
-                int id =Integer.parseInt(resultado.getString("id"));
-                int rut =Integer.parseInt(resultado.getString("rut"));
-                String ingreso =resultado.getString("fecha_ingreso"));
-                String direccion =resultado.getString("direccion");
-                String cumple =resultado.getString("fecha_cumpleaño");
-                String nombre =resultado.getString("nombre");
-                
-                persona.add(new Persona(id, rut, fechaIngreso, fechaCumpleanos, direccion, nombre));
-            }
-        } catch (SQLException ex) {
-             JOptionPane.showMessageDialog(new JDialog(), "Error al listar.");
+            String consulta = "insert into EMPLEADO (id, rut, fecha_ingreso, fecha_cumpleanos, direccion, nombre ) values("+empleado.getId()+","+empleado.getRut()+",'"+empleado.getFechaIngreso()+"','"+empleado.getFechaCumpleanos()+"','"+empleado.getDireccion()+"','"+empleado.getNombre()+"')";
+            statement.executeUpdate(consulta);
         }
-        return peliculas;
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(new JDialog(), "Error al agregar.");
+        }
     }
+    public void eliminar (){
+        
         
     }
-    
-    
-}
+    }
+ }
