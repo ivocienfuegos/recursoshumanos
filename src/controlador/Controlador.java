@@ -27,6 +27,9 @@ public class Controlador {
         statement.executeUpdate(sentencia4);
         statement.executeUpdate(sentencia5);
     }
+       
+       public void agregar(){
+       }
     public void eliminar (){
         
         
