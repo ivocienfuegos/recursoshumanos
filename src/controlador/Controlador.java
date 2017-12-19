@@ -15,37 +15,15 @@ public class Controlador {
     
     private static ArrayList<Empleado> empleados = null;
     //CONSTRUCTOR
-    private Controlador()
+    public Controlador()
     {
         if(empleados == null)
         {
             empleados = new ArrayList<Empleado>();
-            
-            String sentencia = "SELECT id, rut, fecha_ingreso, fecha_cumpleanos, direccion, nombre FROM EMPLEADO"; 
-            try {
-                Connection conexion = Conexion.getConnection();
-                Statement statement = conexion.createStatement();
-                ResultSet resultado = statement.executeQuery(sentencia);
-
-                while (resultado.next()){
-
-                    int codigo =Integer.parseInt(resultado.getString("codigo"));
-                    int id = resultado.getInt("codigo");
-                    int rut = resultado.getInt("rut");
-                    String fechaIngreso = resultado.getString("fecha_ingreso");
-                    String fechaCumpleanos = resultado.getString("fecha_cumpleanos");
-                    String direccion = resultado.getString("direccion");
-                    String nombre = resultado.getString("nombre");
-
-                    empleados.add(new Empleado(id, rut, fechaIngreso, fechaCumpleanos, direccion, nombre));
-                }
-            } 
-            catch (SQLException ex) {
-                 JOptionPane.showMessageDialog(new JDialog(), "Error al iniciar controlador.");
-            }
+            llenarLista();
         }
     }
-    
+            
     
     //MODIFICAR
        public void modificar(Empleado empleado, int rut) throws SQLException
@@ -69,25 +47,82 @@ public class Controlador {
     
     //AGREGAR
     public void agregar(Empleado empleado){
-        empleados.add(empleado);
-        try
+        
+        if(existeEmpleado(empleado.getRut()))
         {
-            Connection conexion = Conexion.getConnection();
-            Statement statement = conexion.createStatement();
-            String consulta = "insert into EMPLEADO (id, rut, fecha_ingreso, fecha_cumpleanos, direccion, nombre ) values("+empleado.getId()+","+empleado.getRut()+",'"+empleado.getFechaIngreso()+"','"+empleado.getFechaCumpleanos()+"','"+empleado.getDireccion()+"','"+empleado.getNombre()+"')";
-            statement.executeUpdate(consulta);
+            JOptionPane.showMessageDialog(new JDialog(), "El rut ingresado ya está en uso.");
         }
-        catch(SQLException e)
+        else
         {
-            JOptionPane.showMessageDialog(new JDialog(), "Error al agregar.");
+            empleados.add(empleado);
+            try
+            {
+                Connection conexion = Conexion.getConnection();
+                Statement statement = conexion.createStatement();
+                String consulta = "insert into EMPLEADO (id, rut, fecha_ingreso, fecha_cumpleanos, direccion, nombre ) values("+empleado.getId()+","+empleado.getRut()+",'"+empleado.getFechaIngreso()+"','"+empleado.getFechaCumpleanos()+"','"+empleado.getDireccion()+"','"+empleado.getNombre()+"')";
+                statement.executeUpdate(consulta);
+            }
+            catch(SQLException e)
+            {
+                JOptionPane.showMessageDialog(new JDialog(), "Error al agregar.");
+            }
+
         }
-    
-    }
-    public void eliminar (){
         
         
     }
+    public void eliminar (int rut){
+        if(!existeEmpleado(rut))
+        {
+            JOptionPane.showMessageDialog(new JDialog(), "El rut no está asociado a ningún empleado.");
+        }
+        else
+        {
+            for(Empleado tmp : empleados)
+            {
+                if(tmp.getRut() == rut)
+                {
+                    empleados.remove(tmp);
+                }
+            }
+        }
+    }
     
+    private void llenarLista(){
+        String sentencia = "SELECT id, rut, fecha_ingreso, fecha_cumpleanos, direccion, nombre FROM EMPLEADO"; 
+            try {
+                Connection conexion = Conexion.getConnection();
+                Statement statement = conexion.createStatement();
+                ResultSet resultado = statement.executeQuery(sentencia);
+
+                while (resultado.next()){
+
+                    int codigo =Integer.parseInt(resultado.getString("codigo"));
+                    int id = resultado.getInt("codigo");
+                    int rut = resultado.getInt("rut");
+                    String fechaIngreso = resultado.getString("fecha_ingreso");
+                    String fechaCumpleanos = resultado.getString("fecha_cumpleanos");
+                    String direccion = resultado.getString("direccion");
+                    String nombre = resultado.getString("nombre");
+
+                    empleados.add(new Empleado(id, rut, fechaIngreso, fechaCumpleanos, direccion, nombre));
+                }
+            } 
+            catch (SQLException ex) {
+                 JOptionPane.showMessageDialog(new JDialog(), "Error al iniciar controlador.");
+            }
+    }
     
+    public boolean existeEmpleado(int rut)
+    {
+        for(Empleado tmp : empleados)
+        {
+            if(tmp.getRut()==rut)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
 }
