@@ -46,7 +46,7 @@ public class Controlador {
     }
     
     //AGREGAR
-    public void agregar(Empleado empleado){
+    public static void agregar(Empleado empleado){
         
         if(existeEmpleado(empleado.getRut()))
         {
@@ -71,7 +71,7 @@ public class Controlador {
         
         
     }
-    public void eliminar (int rut){
+    public static void eliminar (int rut){
         if(!existeEmpleado(rut))
         {
             JOptionPane.showMessageDialog(new JDialog(), "El rut no está asociado a ningún empleado.");
