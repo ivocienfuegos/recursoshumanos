@@ -13,9 +13,9 @@ public class Conexion {
       try{
          if( con == null ){
             String driver="oracle.jdbc.driver.OracleDriver"; //el driver varia segun la DB que usemos
-            String url="jdbc:oracle:thin:@localhost:1521:XE";
-            String pwd="taller";
-            String usr="taller2";
+            String url="jdbc:oracle:thin:@MSP-PM-04-01.aws.smartcloud.cl:1521:XE";
+            String pwd="usuario01";
+            String usr="usuario01";
             Class.forName(driver);
             con = DriverManager.getConnection(url,usr,pwd);
             System.out.println("Conectionesfull");
