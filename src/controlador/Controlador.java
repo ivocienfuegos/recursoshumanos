@@ -113,7 +113,7 @@ public class Controlador {
             }
     }
     
-    public boolean existeEmpleado(int rut)
+    public static boolean existeEmpleado(int rut)
     {
         for(Empleado tmp : empleados)
         {
